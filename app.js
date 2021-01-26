@@ -1,7 +1,7 @@
 // Imports the Google Cloud client library
-const vision = require('@google-cloud/vision')
+const vision = require('@google-cloud/vision');
+const fs = require('fs')
 const xlsx = require('xlsx')
-const prompt = require('prompt-sync')()
 var matrizWords = []
 const matriz = []
 
@@ -16,31 +16,33 @@ const exportXLSX = () => {
     const worksheet = xlsx.utils.aoa_to_sheet(matriz)
     xlsx.utils.book_append_sheet(workbook,worksheet,'Words')
 
-    const d = new Date()
-    const unique = `${d.getDay()}_${d.getMonth()}_${d.getFullYear()}_${d.getHours()}_${d.getHours()}_${d.getMinutes()}_${d.getSeconds()}`
+    const date = new Date()
+    const unique = `${date.getDay()}_${date.getMonth()}_${date.getFullYear()}_${date.getHours()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}`
     xlsx.writeFile(workbook, `reports/Report_${unique}.xlsx`)
     console.log('Finished!');
 }
 
-const detectText = async () => {
+const detectText = () => {
+    // Gets all the images from the img folder
+    const data = fs.readFileSync('images.csv', {encoding: 'utf-8'})
+    const images = data.split(',')
+
     // Creates a new client
     const client = new vision.ImageAnnotatorClient();
-    var moreUrls = false
 
-    do {
-        const url = prompt('Insert the url: ')
-        const [ result ] = await client.textDetection(url.trim());
-        const detections = result.textAnnotations;
-        detections.forEach(getArrayWords);
-        matriz.push(matrizWords)
-        matrizWords = []
-        console.log("Image was processed!");
-
-        const Continue = prompt('want to process more? (y=yes, n=no): ')
-        moreUrls = Continue === 'y'
-    } while(moreUrls === true)
-
-    exportXLSX()
+    const promise = new Promise(async resolve => {
+        // Reads the text from each image
+        for (const image of images) {
+            // Performs text detection on the image file
+            const [result] = await client.textDetection(image);
+            const detections = result.textAnnotations;
+            detections.forEach(getArrayWords);
+            matriz.push(matrizWords)
+            matrizWords = []
+        }
+        resolve()
+    })
+    promise.then(() => exportXLSX())
 }
 
 detectText()
