@@ -3,8 +3,7 @@ const vision = require('@google-cloud/vision');
 const fs = require('fs')
 const xlsx = require('xlsx')
 var matrizWords = []
-const matriz = []
-var readWholePhrase = true
+const matriz = [['Image URL', 'Found']]
 
 const getWords = () => {
     const data = fs.readFileSync('words.csv', {encoding: 'utf-8'})
@@ -17,7 +16,6 @@ const getArrayWords = text => {
 }
 
 const exportXLSX = () => {
-    console.log(matriz);
     // print the words into a spredsheet
     const workbook = xlsx.utils.book_new()
     const worksheet = xlsx.utils.aoa_to_sheet(matriz)
@@ -29,19 +27,32 @@ const exportXLSX = () => {
     console.log('Finished!');
 }
 
+const organizeCells = ocurrencies => {
+    let size = ocurrencies.length
+    var value = ''
+    for (let i = 1; i < size; i++) {
+        value += `${ocurrencies[i]},`
+        ocurrencies[i] = null
+    }
+    ocurrencies[1] = value.substring(0, value.length - 1)
+
+    return ocurrencies
+}
+
 const detectSpecialWords = imgPath => {
     const ocurrencies = matrizWords.filter(foundWord => {
         const masterOcurrencies = (foundWord.match(/master/g) || [])
         const slaveOcurrencies = (foundWord.match(/slave/g) || [])
         const slavesOcurrencies = (foundWord.match(/slaves/g) || [])
 
-        const ocurrencies = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies]
-        if(ocurrencies.length > 0) {
-            return ocurrencies
+        const ocurrenciesFound = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies]
+        if(ocurrenciesFound.length > 0) {
+            return ocurrenciesFound
         }
     })
     ocurrencies[0] = imgPath
-    return ocurrencies
+
+    return organizeCells(ocurrencies)
 }
 
 const detectText = () => {
@@ -63,7 +74,6 @@ const detectText = () => {
 
             matriz.push(matrizWords)
             matrizWords = []
-            readWholePhrase = true
         }
         resolve()
     })
