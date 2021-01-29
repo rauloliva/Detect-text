@@ -2,7 +2,6 @@
 const vision = require('@google-cloud/vision');
 const fs = require('fs')
 var matrizWords = []
-const matriz = []
 
 const getArrayWords = text => {
     const cell = text.description.toLowerCase()
@@ -16,7 +15,7 @@ const organizeCells = ocurrencies => {
         value += `${ocurrencies[i]}, `
         ocurrencies[i] = null
     }
-    //value.length - 2 in order to remove the last space and comma
+    //value.length - 2 => removes the last space and comma
     ocurrencies[1] = value.trim().substring(0, value.length - 2)
     return ocurrencies
 }
@@ -27,6 +26,7 @@ const detectSpecialWords = imgPath => {
         const slaveOcurrencies = (foundWord.match(/slave/g) || [])
         const slavesOcurrencies = (foundWord.match(/slaves/g) || [])
 
+        //Gathering all the ocurrencies in a single array
         const ocurrenciesFound = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies]
         if(ocurrenciesFound.length > 0) {
             return ocurrenciesFound
@@ -46,6 +46,7 @@ const detectText = () => {
     const client = new vision.ImageAnnotatorClient();
 
     return new Promise(async resolve => {
+        const matriz = []
         // Reads the text from each image
         for (const image of images) {
             // Performs text detection on the image file
