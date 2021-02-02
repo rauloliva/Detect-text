@@ -38,6 +38,8 @@ const detectSpecialWords = imgPath => {
 }
 
 const detectText = () => {
+    console.log("OCR has started");
+
     // Gets all the images from the img folder
     const data = fs.readFileSync('images.csv', {encoding: 'utf-8'})
     const images = data.split(',')
@@ -58,6 +60,7 @@ const detectText = () => {
             matriz.push(matrizWords)
             matrizWords = []
         }
+        console.log("OCR has finished");
         resolve(matriz)
     })
 }
