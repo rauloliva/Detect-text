@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const detectText = require('./ocr')
+const report = require('./report')
 const port = 3000
 
 app.set('view engine', 'ejs')
@@ -14,6 +15,12 @@ app.get('/', (req, res) => {
 
 app.get('/ocr', (req, res) => {
     detectText().then(images => {
+        res.render('table', {images: images})
+    })
+})
+
+app.get('/report', (req, res) => {
+    report().then(images => {
         res.render('table', {images: images})
     })
 })

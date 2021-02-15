@@ -37,6 +37,19 @@ const detectSpecialWords = imgPath => {
     return organizeCells(ocurrencies)
 }
 
+const saveReport = matriz => {
+    const array = []
+    matriz.forEach(row => {
+        const jsObj = {
+            "url": row[0],
+            "words": row[1]
+        }
+        array.push(jsObj)
+    })
+    const jsonObj = JSON.stringify(array)
+    fs.writeFileSync('json_report.json', jsonObj, {encoding: 'UTF-8'})
+}
+
 const detectText = () => {
     console.log("OCR has started");
 
@@ -61,6 +74,8 @@ const detectText = () => {
             matrizWords = []
         }
         console.log("OCR has finished");
+        console.log(matriz);
+        saveReport(matriz)
         resolve(matriz)
     })
 }
