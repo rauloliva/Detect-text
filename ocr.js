@@ -74,7 +74,6 @@ const detectText = () => {
             matrizWords = []
         }
         console.log("OCR has finished");
-        console.log(matriz);
         saveReport(matriz)
         resolve(matriz)
     })
