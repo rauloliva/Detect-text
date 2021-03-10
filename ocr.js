@@ -2,6 +2,15 @@
 const vision = require('@google-cloud/vision');
 const fs = require('fs')
 var matrizWords = []
+const jsonActions = {
+    rewrite: (jsonObj) => fs.writeFileSync('ocr_report.json', jsonObj, {encoding: 'UTF-8'}),
+    append: (jsonObj) => {
+        const json = fs.readFileSync('ocr_report.json', {encoding: 'utf-8'})
+        const currentContent = JSON.parse(json)
+        currentContent.push(JSON.parse(jsonObj)[0])
+        fs.writeFileSync('ocr_report.json', JSON.stringify(currentContent), {encoding: 'UTF-8'})
+    }
+}
 
 const getArrayWords = text => {
     const cell = text.description.toLowerCase()
@@ -37,7 +46,7 @@ const detectSpecialWords = imgPath => {
     return organizeCells(ocurrencies)
 }
 
-const saveReport = matriz => {
+const saveReport = (matriz, jsonAction) => {
     const array = []
     matriz.forEach(row => {
         const jsObj = {
@@ -47,10 +56,11 @@ const saveReport = matriz => {
         array.push(jsObj)
     })
     const jsonObj = JSON.stringify(array)
-    fs.writeFileSync('json_report.json', jsonObj, {encoding: 'UTF-8'})
+    jsonActions[jsonAction](jsonObj)
+    // fs.writeFileSync('json_report.json', jsonObj, {encoding: 'UTF-8'})
 }
 
-const detectText = () => {
+const detectText = jsonAction => {
     console.log("OCR has started");
 
     // Gets all the images from the img folder
@@ -74,8 +84,8 @@ const detectText = () => {
             matrizWords = []
         }
         console.log("OCR has finished");
-        saveReport(matriz)
-        resolve(matriz)
+        saveReport(matriz, jsonAction)
+        resolve()
     })
 }
 

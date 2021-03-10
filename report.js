@@ -3,7 +3,7 @@ const fs = require('fs')
 const readJsonReport = () => {
     return new Promise(resolve => {
         const matriz = []
-        const data = fs.readFileSync('json_report.json', {encoding: 'UTF-8'})
+        const data = fs.readFileSync('ocr_report.json', {encoding: 'UTF-8'})
         const json = JSON.parse(data)
 
         json.forEach(obj => {

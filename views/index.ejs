@@ -1,8 +1,16 @@
 <%- include('header', {view: ''}) %>
 <body>
     
-    <form method="GET" action="/">
+    <form method="POST" action="/">
         <div class="d-grid gap-2 col-6 mx-auto container">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="jsonAction" id="btnradio1" value="rewrite">
+                <label class="btn btn-outline-primary" for="btnradio1">Rewrite JSON</label>
+              
+                <input type="radio" class="btn-check" name="jsonAction" id="btnradio2" value="append" checked>
+                <label class="btn btn-outline-primary" for="btnradio2">Append JSON</label>
+              </div>
+
             <button id="ocr" class="btn btn-success" onclick="onClick('ocr', '/ocr')" type="submit">Start Detecting Text</button>
             <button id="report" class="btn btn-info" onclick="onClick('report', '/report')" type="submit">Load last Report</button>
         </div>
