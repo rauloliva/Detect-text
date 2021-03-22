@@ -1,14 +1,20 @@
 // Imports the Google Cloud client library
 const vision = require('@google-cloud/vision');
 const fs = require('fs')
+const ocr_report = 'ocr_report.json'
 var matrizWords = []
+
 const jsonActions = {
-    rewrite: (jsonObj) => fs.writeFileSync('ocr_report.json', jsonObj, {encoding: 'UTF-8'}),
+    rewrite: (jsonObj) => fs.writeFileSync(ocr_report, jsonObj, {encoding: 'UTF-8'}),
     append: (jsonObj) => {
-        const json = fs.readFileSync('ocr_report.json', {encoding: 'utf-8'})
+        const json = fs.readFileSync(ocr_report, {encoding: 'utf-8'})
         const currentContent = JSON.parse(json)
-        currentContent.push(JSON.parse(jsonObj)[0])
-        fs.writeFileSync('ocr_report.json', JSON.stringify(currentContent), {encoding: 'UTF-8'})
+        const array = JSON.parse(jsonObj)
+        array.forEach(obj => {
+            currentContent.push(obj)
+        })
+        
+        fs.writeFileSync(ocr_report, JSON.stringify(currentContent), {encoding: 'UTF-8'})
     }
 }
 
@@ -31,12 +37,16 @@ const organizeCells = ocurrencies => {
 
 const detectSpecialWords = imgPath => {
     const ocurrencies = matrizWords.filter(foundWord => {
-        const masterOcurrencies = (foundWord.match(/master/g) || [])
+        const mastersOcurrencies = (foundWord.match(/master/g) || [])
+        const masterOcurrencies = (foundWord.match(/masters/g) || [])
         const slaveOcurrencies = (foundWord.match(/slave/g) || [])
         const slavesOcurrencies = (foundWord.match(/slaves/g) || [])
+        const blacklistOcurrencies = (foundWord.match(/blacklist/g) || [])
+        const whitelistOcurrencies = (foundWord.match(/whitelist/g) || [])
 
         //Gathering all the ocurrencies in a single array
-        const ocurrenciesFound = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies]
+        const ocurrenciesFound = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies,
+                                 ...blacklistOcurrencies, ...whitelistOcurrencies, ...mastersOcurrencies]
         if(ocurrenciesFound.length > 0) {
             return ocurrenciesFound
         }
@@ -57,7 +67,6 @@ const saveReport = (matriz, jsonAction) => {
     })
     const jsonObj = JSON.stringify(array)
     jsonActions[jsonAction](jsonObj)
-    // fs.writeFileSync('json_report.json', jsonObj, {encoding: 'UTF-8'})
 }
 
 const detectText = jsonAction => {
