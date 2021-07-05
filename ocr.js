@@ -37,12 +37,12 @@ const organizeCells = ocurrencies => {
 
 const detectSpecialWords = imgPath => {
     const ocurrencies = matrizWords.filter(foundWord => {
-        const mastersOcurrencies = (foundWord.match(/master/g) || [])
-        const masterOcurrencies = (foundWord.match(/masters/g) || [])
-        const slaveOcurrencies = (foundWord.match(/slave/g) || [])
-        const slavesOcurrencies = (foundWord.match(/slaves/g) || [])
-        const blacklistOcurrencies = (foundWord.match(/blacklist/g) || [])
-        const whitelistOcurrencies = (foundWord.match(/whitelist/g) || [])
+        const mastersOcurrencies = (foundWord.match(/master/ig) || [])
+        const masterOcurrencies = (foundWord.match(/masters/ig) || [])
+        const slaveOcurrencies = (foundWord.match(/slave/ig) || [])
+        const slavesOcurrencies = (foundWord.match(/slaves/ig) || [])
+        const blacklistOcurrencies = (foundWord.match(/blacklist/ig) || [])
+        const whitelistOcurrencies = (foundWord.match(/whitelist/ig) || [])
 
         //Gathering all the ocurrencies in a single array
         const ocurrenciesFound = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies,
