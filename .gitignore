@@ -1,7 +1,10 @@
 node_modules/
+.vscode/
+
+# 
 reports/
 img/
-images.csv
-.vscode/
-json_report.json
+ocr_report.json
+
+# Electron desktop application
 ocr-win32-x64

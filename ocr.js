@@ -28,32 +28,10 @@ const organizeCells = ocurrencies => {
     var value = ''
     for (let i = 1; i < size; i++) {
         value += `${ocurrencies[i]}, `
-        ocurrencies[i] = null
     }
     //value.length - 2 => removes the last space and comma
     ocurrencies[1] = value.trim().substring(0, value.length - 2)
     return ocurrencies
-}
-
-const detectSpecialWords = imgPath => {
-    const ocurrencies = matrizWords.filter(foundWord => {
-        const mastersOcurrencies = (foundWord.match(/master/ig) || [])
-        const masterOcurrencies = (foundWord.match(/masters/ig) || [])
-        const slaveOcurrencies = (foundWord.match(/slave/ig) || [])
-        const slavesOcurrencies = (foundWord.match(/slaves/ig) || [])
-        const blacklistOcurrencies = (foundWord.match(/blacklist/ig) || [])
-        const whitelistOcurrencies = (foundWord.match(/whitelist/ig) || [])
-
-        //Gathering all the ocurrencies in a single array
-        const ocurrenciesFound = [...masterOcurrencies, ...slaveOcurrencies, ...slavesOcurrencies,
-                                 ...blacklistOcurrencies, ...whitelistOcurrencies, ...mastersOcurrencies]
-        if(ocurrenciesFound.length > 0) {
-            return ocurrenciesFound
-        }
-    })
-    ocurrencies[0] = imgPath
-
-    return organizeCells(ocurrencies)
 }
 
 const saveReport = (matriz, jsonAction) => {
@@ -86,13 +64,13 @@ const detectText = jsonAction => {
             // Performs text detection on the image file
             const [result] = await client.textDetection(image);
             const detections = result.textAnnotations;
-            detections.forEach(getArrayWords);
-            matrizWords = detectSpecialWords(image)
-
+            detections.forEach(getArrayWords)
+            matrizWords[0] = image
+            matrizWords = organizeCells(matrizWords)
             matriz.push(matrizWords)
             matrizWords = []
         }
-        console.log("OCR has finished");
+        console.log("OCR has finished ")
         saveReport(matriz, jsonAction)
         resolve()
     })
