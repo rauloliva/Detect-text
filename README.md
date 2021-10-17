@@ -39,6 +39,8 @@ Now you are ready to execute the app.
 
 ## UI Components
 
+![Main Options image](https://github.com/rauloliva/Detect-text/blob/master/img/UIComponent.jpg?raw=true)
+
 The app will generate a new JSON file called **_ocr_report.json_** if the **Rewrite JSON** option is selected otherwise this will use the same file but will append the new data.
 
 The load last report will convert the data from the **_ocr_report.json_** file into a table to see in a more readable manner.
