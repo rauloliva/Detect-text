@@ -3,7 +3,6 @@ node_modules/
 
 # 
 reports/
-img/
 ocr_report.json
 
 # Electron desktop application
