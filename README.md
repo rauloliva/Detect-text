@@ -48,3 +48,5 @@ The load last report will convert the data from the **_ocr_report.json_** file i
 **IMPORTANT:**
 
 First of all you be aware of the [OCR Pricing Details](https://cloud.google.com/vision/pricing "Google Cloud pricing details") 
+
+Then download the credentials.json file from the google developer console so the tool can work.

@@ -4,6 +4,8 @@ node_modules/
 # 
 reports/
 ocr_report.json
+credentials.json
+*.pdf
 
 # Electron desktop application
 ocr-win32-x64
